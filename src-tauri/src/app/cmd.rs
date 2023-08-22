@@ -37,7 +37,7 @@ pub fn save_file(_app: AppHandle, name: String, content: String) {
   let path = utils::app_root().join(PathBuf::from(name));
   utils::create_file(&path).unwrap();
   fs::write(&path, content).unwrap();
-  utils::open_file(path);
+  // utils::open_file(path);
   // tauri::api::dialog::message(
   //   win.as_ref(),
   //   "Save File",
