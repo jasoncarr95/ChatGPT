@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "ChatGPT",
+    "productName": "ChatGPT-Yason2",
     "version": "1.1.0"
   },
   "tauri": {
@@ -51,7 +51,7 @@
     "systemTray": {
       "iconPath": "icons/tray-icon.png",
       "iconAsTemplate": true,
-      "menuOnLeftClick": false
+      "menuOnLeftClick": true
     },
     "bundle": {
       "active": true,
@@ -69,7 +69,7 @@
         "icons/icon.ico"
       ],
       "identifier": "com.lencx.chatgpt",
-      "longDescription": "ChatGPT Desktop Application",
+      "longDescription": "ChatGPT Desktop Application by Yason",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -77,7 +77,7 @@
         "providerShortName": null,
         "signingIdentity": null
       },
-      "shortDescription": "ChatGPT",
+      "shortDescription": "ChatGPT-Yason",
       "targets": "all",
       "windows": {
         "certificateThumbprint": null,
@@ -116,14 +116,6 @@
             "tray"
           ],
           "domain": "openai.com",
-          "enableTauriAPI": true
-        },
-        {
-          "windows": [
-            "chatgpt_sponsors",
-            "app_website"
-          ],
-          "domain": "app.nofwl.com",
           "enableTauriAPI": true
         }
       ]
