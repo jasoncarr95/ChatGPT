@@ -287,10 +287,47 @@ async function exportInit() {
     }[type];
   }
 
+  function getFileName() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+
+    // Get the page title and date for the file name.
+    let pageTitle = document.title;
+
+    // remove special characters and spaces from the page title
+    pageTitle = pageTitle.replace(/[^a-zA-Z0-9-]/g, '-');
+
+    // Make sure page title doesn't start with a dash
+    if (pageTitle.startsWith('-')) {
+      pageTitle = pageTitle.slice(1);
+    }
+
+    let fileName = `${pageTitle}-${dateString}`;
+
+    // Replace any occurrence of one or more dashes with a single dash
+    fileName = fileName.replace(/-+/g, '-');
+
+    // Remove any trailing dashes from the file name
+    fileName = fileName.replace(/-$/, '');
+
+    return fileName;
+  }
+
   function getName() {
-    const id = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(36);
-    const name =
-      document.querySelector('nav .overflow-y-auto a.hover\\:bg-gray-800')?.innerText?.trim() || '';
+    // const name = document.querySelector('nav .overflow-y-auto a.hover\\:bg-gray-800')?.innerText?.trim() || '';
+    const name = getFileName();
+
+    let id;
+    if (name && name.length > 1) {
+      id = name;
+    } else {
+      id = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(36);
+    }
+
+    // const id = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(36);
     // clean_name = sanitizeFilename(name);
     return {
       id,
