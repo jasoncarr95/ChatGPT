@@ -31,18 +31,21 @@ pub fn fullscreen(app: AppHandle) {
 //   );
 // }
 
+/**
+ * Used for saving Markdown files
+ */
 #[command]
-pub fn save_file(_app: AppHandle, name: String, content: String) {
-  // let win = app.app_handle().get_window("core");
+pub fn save_file(app: AppHandle, name: String, content: String) {
+  let win = app.app_handle().get_window("core");
   let path = utils::app_root().join(PathBuf::from(name));
   utils::create_file(&path).unwrap();
   fs::write(&path, content).unwrap();
   // utils::open_file(path);
-  // tauri::api::dialog::message(
-  //   win.as_ref(),
-  //   "Save File",
-  //   format!("PATH: {}", path.display()),
-  // );
+  tauri::api::dialog::message(
+    win.as_ref(),
+    "Save File",
+    format!("PATH: {}", path.display()),
+  );
 }
 
 #[command]
@@ -60,6 +63,9 @@ pub fn open_file(path: PathBuf) {
   utils::open_file(path);
 }
 
+/**
+ * For Images and PDFs
+ */
 #[command]
 pub fn download_file(name: String, blob: Vec<u8>) {
   let file = tauri::api::path::download_dir().unwrap().join(name);
