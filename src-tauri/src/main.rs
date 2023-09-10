@@ -55,6 +55,7 @@ async fn main() {
     .invoke_handler(tauri::generate_handler![
       cmd::drag_window,
       cmd::fullscreen,
+      cmd::file_exists,
       cmd::save_file,
       cmd::open_link,
       cmd::run_check_update,

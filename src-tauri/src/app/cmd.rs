@@ -18,6 +18,21 @@ pub fn fullscreen(app: AppHandle) {
   }
 }
 
+/** Add function to check if file exists before saving */
+use std::path::Path;
+
+// #[tauri::command]
+// pub fn file_exists(path: String) -> bool {
+//   println!("Checking path: {}", path); // Debug: Log the path being checked
+//   Path::new(&path).exists()
+//   // Path::new(&path).is_file()
+// }
+#[tauri::command]
+pub fn file_exists(name: String) -> bool {
+  let path = utils::app_root().join(PathBuf::from(name));
+  Path::new(&path).exists()
+}
+
 // #[command]
 // pub fn download(app: AppHandle, name: String, blob: Vec<u8>) {
 //   let win = app.app_handle().get_window("core");
@@ -35,9 +50,15 @@ pub fn fullscreen(app: AppHandle) {
  * Used for saving Markdown files
  */
 #[command]
-pub fn save_file(app: AppHandle, name: String, content: String) {
+pub fn save_file(app: AppHandle, name: String, content: String) -> Result<(), String> {
   let win = app.app_handle().get_window("core");
   let path = utils::app_root().join(PathBuf::from(name));
+
+  // If file exists, ask user if they want to overwrite
+  // if Path::new(&path).exists() {
+  //   // TODO
+  // }
+
   utils::create_file(&path).unwrap();
   fs::write(&path, content).unwrap();
   // utils::open_file(path);
@@ -46,6 +67,7 @@ pub fn save_file(app: AppHandle, name: String, content: String) {
     "Save File",
     format!("PATH: {}", path.display()),
   );
+  Ok(())
 }
 
 #[command]

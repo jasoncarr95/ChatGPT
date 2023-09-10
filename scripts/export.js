@@ -1,6 +1,7 @@
 /**
  * @name export.js
  * @version 0.1.5
+ * @updated 2023-09-10-Sunday
  * @url https://github.com/lencx/ChatGPT/tree/main/scripts/export.js
  */
 
@@ -49,11 +50,50 @@ async function exportInit() {
     });
 
     const updatedContent = nodes.map((i) => processNode(i, true)).join('');
-
     const data = ExportMD.turndown(updatedContent);
-    const { id, filename } = getName();
-    await invoke('save_file', { name: `notes/${id}.md`, content: data });
-    await invoke('download_list', { pathname: 'chat.notes.json', filename, id, dir: 'notes' });
+
+    //! --------------- Check if file already exists -------------- */
+    let { id, filename } = getName();
+    let filePath = `notes/${id}.md`;
+
+    // Debug: Log the initial file path
+    console.log(`Initial file path: ${filePath}`);
+    console.log(`Initial file name: ${filename}`);
+    console.log(`Initial file id: ${id}`);
+
+    // Check if the file already exists
+    const exists = await invoke('file_exists', { name: filePath });
+    // const exists = await invoke("file_exists", { path: filePath });
+
+    // Debug: Log the result of the file existence check
+    console.log(`File exists: ${exists}`);
+
+    if (exists) {
+      // Generate a new filename (e.g., append a timestamp or a counter)
+      const UUID = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(36);
+      console.log(`File already exists. Appending UUID: ${UUID}`);
+      filename = `${filename}_${UUID}`;
+      id = `${id}_${UUID}`;
+      filePath = `notes/${id}.md`;
+
+      // Debug: Log the new file path
+      console.log(`New file path: ${filePath}`);
+    }
+
+    // if (fileExists) {
+    //   const overwrite = confirm(`A file named ${filename}.md already exists. Do you want to overwrite it?`);
+    //   if (!overwrite) return;
+    // } else {
+    //   const create = confirm(`Do you want to create a file named ${filename}.md?`);
+    //   if (!create) return;
+    // } // end if
+
+    try {
+      await invoke('save_file', { name: filePath, content: data });
+      await invoke('download_list', { pathname: 'chat.notes.json', filename, id, dir: 'notes' });
+    } catch (err) {
+      console.error('Error:', err);
+    }
   }
 
   async function downloadThread({ as = Format.PNG } = {}) {
@@ -287,7 +327,7 @@ async function exportInit() {
     }[type];
   }
 
-  function getFileName() {
+  function generateFileName() {
     const now = new Date();
     const year = now.getFullYear();
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
@@ -318,7 +358,7 @@ async function exportInit() {
 
   function getName() {
     // const name = document.querySelector('nav .overflow-y-auto a.hover\\:bg-gray-800')?.innerText?.trim() || '';
-    const name = getFileName();
+    const name = generateFileName();
 
     let id;
     if (name && name.length > 1) {
